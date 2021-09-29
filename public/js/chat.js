@@ -11,12 +11,3 @@ document.querySelector("#message-form").addEventListener('submit', (event) =>{
 socket.on('message',(message)=>{
 	console.log(message)
 })
-
-// -------- generando contador -----------------
-socket.on('counter', (count)=>{
-	console.log('the counter is in ',count)
-})
-
-document.querySelector('#counter').addEventListener('click', ()=>{
-	socket.emit('countIncrement')
-})

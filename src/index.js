@@ -22,22 +22,19 @@ let count = 0
 io.on('connection', (socket) =>{
 // --------- enviando mensajes de texto
 	console.log('New WebSocket connection')
-
+	socket.emit('message','Welcome back!')
 
 	socket.on('sendMessage', (msg) =>{
 		io.emit('message',msg)
 	})
 
-// ------------generando contador -------------------
-	socket.emit('counter',count)
+	socket.broadcast.emit('message','A new user has joined!')
 
-	socket.on('countIncrement', () =>{
-		count++
-		io.emit('counter',count)
+	socket.on('disconnect', () =>{
+		io.emit('message','A user has left')
 	})
 })
 
 server.listen(port, () =>{ // **** websocket configutation line
 	console.log('server is up and running on port '+port)
 })
-
