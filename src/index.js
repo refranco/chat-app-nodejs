@@ -17,8 +17,24 @@ const partialPath = path.join(__dirname,'../templates/partial')
 //setup static directory 
 app.use(express.static(publicDirectoryPath))
 
-io.on('connection',() =>{
-	console.log('new WebSocket connection!')
+let count = 0
+
+io.on('connection', (socket) =>{
+// --------- enviando mensajes de texto
+	console.log('New WebSocket connection')
+
+
+	socket.on('sendMessage', (msg) =>{
+		io.emit('message',msg)
+	})
+
+// ------------generando contador -------------------
+	socket.emit('counter',count)
+
+	socket.on('countIncrement', () =>{
+		count++
+		io.emit('counter',count)
+	})
 })
 
 server.listen(port, () =>{ // **** websocket configutation line
