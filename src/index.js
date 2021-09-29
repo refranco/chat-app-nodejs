@@ -30,6 +30,11 @@ io.on('connection', (socket) =>{
 
 	socket.broadcast.emit('message','A new user has joined!')
 
+	socket.on('sendLocation', (location) =>{
+		io.emit('message',
+		`https://www.google.com/maps/@${location.longitude},${location.latitude}`)
+	})
+
 	socket.on('disconnect', () =>{
 		io.emit('message','A user has left')
 	})
