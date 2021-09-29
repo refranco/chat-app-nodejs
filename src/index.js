@@ -1,5 +1,6 @@
 const path = require('path')
 const http = require('http') // **** websocket configutation line
+const Filter = require('bad-words')
 const express = require('express')
 const socketio = require('socket.io') // **** websocket configutation line
 
@@ -24,15 +25,24 @@ io.on('connection', (socket) =>{
 	console.log('New WebSocket connection')
 	socket.emit('message','Welcome back!')
 
-	socket.on('sendMessage', (msg) =>{
+	socket.on('sendMessage', (msg, callback) =>{
+		const filter = new Filter()
+
+		if (filter.isProfane(msg)){
+			return callback('Profanity is not allowed')
+		}
+
 		io.emit('message',msg)
+		callback()
+
 	})
 
 	socket.broadcast.emit('message','A new user has joined!')
 
-	socket.on('sendLocation', (location) =>{
+	socket.on('sendLocation', (location, cb) =>{
 		io.emit('message',
 		`https://www.google.com/maps/@${location.longitude},${location.latitude}`)
+		cb()
 	})
 
 	socket.on('disconnect', () =>{
