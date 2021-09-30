@@ -10,13 +10,14 @@ const $messages = document.querySelector('#messages')
 // Templates
 const messagTemplate = document.querySelector('#message-template').innerHTML
 const locationTemplate = document.querySelector('#location-template').innerHTML
-// --------- enviando mensajes de texto
+// --------- escuchando los mensajes del cliente
 $messageForm.addEventListener('submit', (event) =>{
 	event.preventDefault() // previene que no se borre el mensaje antes de
 
 	// deshabilitar el form mientras envio mensaje
 	$messageFormButton.setAttribute('disabled','disabled')
-
+	
+	// enviando mensaje al servidor
 	const msg = event.target.elements.message.value
 	socket.emit('sendMessage', msg, (error) =>{
 	
@@ -34,7 +35,10 @@ $messageForm.addEventListener('submit', (event) =>{
 socket.on('message',(message)=>{
 	console.log(message)
 
-	const html = Mustache.render(messagTemplate, {message})
+	const html = Mustache.render(messagTemplate, {
+		message:message.text,
+		createdAt:moment(message.createdAt).format('h:mm a')
+	})
 	$messages.insertAdjacentHTML('beforeend', html)
 })
 
@@ -51,15 +55,19 @@ $sendLocation.addEventListener('click', () =>{
 		const {latitude, longitude} = position.coords
 		socket.emit('sendLocation',{latitude, longitude},() =>{
 			console.log('location shared!')
-		// habilitar boton nuevamente
-		$sendLocation.removeAttribute('disabled')
+
+	// habilitar boton nuevamente
+	$sendLocation.removeAttribute('disabled')
 		})
 		})
 	
 	})
 
-socket.on('locationMessage', (location) =>{
-	console.log(location)
-	const html = Mustache.render(locationTemplate, {location})
+socket.on('locationMessage', (loc) =>{
+	console.log(loc)
+	const html = Mustache.render(locationTemplate, {
+		location: loc.url,
+		createdAt: moment(loc.createdAt).format('h:mm a')
+	})
 	$messages.insertAdjacentHTML('beforeend',html)
 })
