@@ -10,6 +10,11 @@ const $messages = document.querySelector('#messages')
 // Templates
 const messagTemplate = document.querySelector('#message-template').innerHTML
 const locationTemplate = document.querySelector('#location-template').innerHTML
+
+// QS ---- trabajando con querys -------------
+const {username, room} = Qs.parse(location.search,{ignoreQueryPrefix: true})
+
+
 // --------- escuchando los mensajes del cliente
 $messageForm.addEventListener('submit', (event) =>{
 	event.preventDefault() // previene que no se borre el mensaje antes de
@@ -71,3 +76,5 @@ socket.on('locationMessage', (loc) =>{
 	})
 	$messages.insertAdjacentHTML('beforeend',html)
 })
+
+socket.emit('join',{ username, room })
