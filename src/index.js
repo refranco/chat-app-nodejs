@@ -40,7 +40,7 @@ io.on('connection', (socket) =>{
 	socket.broadcast.emit('message','A new user has joined!')
 
 	socket.on('sendLocation', (location, cb) =>{
-		io.emit('message',
+		io.emit('locationMessage',
 		`https://www.google.com/maps/@${location.longitude},${location.latitude}`)
 		cb()
 	})
